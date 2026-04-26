@@ -12,10 +12,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR, 'djangoapp', '.env'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -135,6 +137,8 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+BACKEND_URL = os.getenv('BACKEND_URL', os.getenv('backend_url', 'http://localhost:3030'))
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/static'),

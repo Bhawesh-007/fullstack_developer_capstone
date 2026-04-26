@@ -16,8 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from django.views.static import serve
 from django.conf.urls.static import static
 from django.conf import settings
+from djangoapp import views as djangoapp_views
+import os
+
+BUILD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'build')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +32,13 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name="Contact.html")),
     path('login/', TemplateView.as_view(template_name="index.html")),
     path('register/', TemplateView.as_view(template_name="index.html")),
+    path('dealers/', TemplateView.as_view(template_name="index.html")),
+    path('manifest.json', serve, {'document_root': BUILD_DIR, 'path': 'manifest.json'}),
+    path('favicon.ico', serve, {'document_root': BUILD_DIR, 'path': 'favicon.ico'}),
+    path('logo192.png', serve, {'document_root': BUILD_DIR, 'path': 'logo192.png'}),
+    path('logo512.png', serve, {'document_root': BUILD_DIR, 'path': 'logo512.png'}),
+    path('asset-manifest.json', serve, {'document_root': BUILD_DIR, 'path': 'asset-manifest.json'}),
+    path('robots.txt', serve, {'document_root': BUILD_DIR, 'path': 'robots.txt'}),
 
 
 

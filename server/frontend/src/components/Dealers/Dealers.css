@@ -86,3 +86,137 @@ table{
   transform: scale(1.1);
   border: solid lightgray;
 }
+
+.dealers-page {
+  min-height: 100vh;
+  background: #f3f8ff;
+}
+
+.dealers-main {
+  width: min(1200px, calc(100% - 32px));
+  margin: 24px auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+}
+
+.dealers-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.dealers-toolbar h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #0a3a66;
+}
+
+.dealers-summary {
+  margin: 6px 0 0;
+  color: #4f5b76;
+}
+
+.dealers-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dealers-filter label {
+  font-weight: 600;
+  color: #333;
+}
+
+.dealers-filter select {
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #1f2937;
+}
+
+.dealer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.dealer-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.dealer-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.dealer-name {
+  display: inline-block;
+  color: #134e6f;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.dealer-name:hover {
+  color: #0c3b56;
+  text-decoration: underline;
+}
+
+.dealer-location {
+  margin: 8px 0 0;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.dealer-card-body p {
+  margin: 6px 0;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.dealer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.dealer-review-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #0d9488;
+  box-shadow: 0 6px 18px rgba(13, 148, 136, 0.18);
+}
+
+.dealer-review-link img {
+  width: 22px;
+  filter: invert(1);
+}
+
+@media (max-width: 680px) {
+  .dealers-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
