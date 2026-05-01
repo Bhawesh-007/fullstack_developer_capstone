@@ -13,10 +13,12 @@ services:
 
   # Node api service
   api:
-    image: nodeapp
+    build: .
     ports:
-      - 3030:3030
-    depends_on: 
+      - "3030:3030"
+    environment:
+      - MONGO_URL=mongodb://mongo_db:27017/dealershipsDB
+    depends_on:
       - mongo_db
 
 volumes:

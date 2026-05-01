@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  mongo_db:
+    image: mongo:latest
+    container_name: db_container
+    ports:
+      - 27017:27017
+    restart: always
+    volumes:
+      - mongo_data:/data/db
+
+  api:
+    build:
+      context: ./database
+    container_name: node_api
+    ports:
+      - 3030:3030
+    depends_on:
+      - mongo_db
+
+  django:
+    build: .
+    container_name: django_app
+    ports:
+      - 8000:8000
+    environment:
+      - BACKEND_URL=http://api:3030
+    depends_on:
+      - api
+
+volumes:
+  mongo_data: {}

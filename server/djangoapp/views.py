@@ -93,7 +93,7 @@ def registration(request):
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
 def get_dealerships(request):
-    url = "http://localhost:3030/fetchDealers"
+    url = settings.BACKEND_URL + "/fetchDealers"
 
     try:
         response = requests.get(url)
@@ -105,7 +105,7 @@ def get_dealerships(request):
 
 
 def get_dealer_reviews(request, dealer_id):
-    url = f"http://localhost:3030/fetchReviews/dealer/{dealer_id}"
+    url = settings.BACKEND_URL + f"/fetchReviews/dealer/{dealer_id}"
 
     try:
         response = requests.get(url)

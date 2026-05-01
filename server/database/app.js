@@ -20,7 +20,7 @@ const dealerships_data = JSON.parse(
 );
 
 // ✅ Correct Mongo connection (LOCAL)
-mongoose.connect("mongodb://127.0.0.1:27017/dealershipsDB")
+mongoose.connect("mongodb://mongo_db:27017/dealershipsDB")
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log("MongoDB connection error:", err));
 
@@ -148,6 +148,6 @@ app.post('/insert_review', async (req, res) => {
 
 
 // Start server
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on port ${port}`);
 });
