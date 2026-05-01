@@ -1,5 +1,6 @@
 # Uncomment the required imports before adding the code
 
+from django import http
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
@@ -7,6 +8,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import logout
 from django.contrib import messages
 from datetime import datetime
+import os
 import requests
 from django.conf import settings
 from django.http import JsonResponse
@@ -91,7 +93,7 @@ def registration(request):
 # # Update the `get_dealerships` view to render the index page with
 # a list of dealerships
 def get_dealerships(request):
-    url = settings.BACKEND_URL
+    url = "http://localhost:3030/fetchDealers"
 
     try:
         response = requests.get(url)
@@ -101,14 +103,66 @@ def get_dealerships(request):
 
     return JsonResponse(dealers, safe=False)
 
-# Create a `get_dealer_reviews` view to render the reviews of a dealer
-# def get_dealer_reviews(request,dealer_id):
-# ...
+
+def get_dealer_reviews(request, dealer_id):
+    url = f"http://localhost:3030/fetchReviews/dealer/{dealer_id}"
+    try:
+        response = requests.get(url)
+        reviews = response.json()
+    except:
+        reviews = []
+
+    return JsonResponse(reviews, safe=False)
 
 # Create a `get_dealer_details` view to render the dealer details
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, dealer_id):
+    url = settings.BACKEND_URL + f"/fetchDealer/{dealer_id}"
+    try:
+        response = requests.get(url)
+        dealer = response.json()
+    except:
+        dealer = {}
 
-# Create a `add_review` view to submit a review
-# def add_review(request):
-# ...
+    return JsonResponse(dealer, safe=False)
+
+# Create a `get_cars` view to return available car make/model pairs
+def get_cars(request):
+    car_records_path = os.path.join(settings.BASE_DIR, 'database', 'data', 'car_records.json')
+    try:
+        with open(car_records_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        cars = data.get('cars', [])
+        seen = set()
+        car_models = []
+        for car in cars:
+            make = car.get('make')
+            model = car.get('model')
+            if make and model:
+                key = (make, model)
+                if key not in seen:
+                    seen.add(key)
+                    car_models.append({'CarMake': make, 'CarModel': model})
+    except Exception:
+        car_models = []
+
+    return JsonResponse({'CarModels': car_models})
+
+# Create an `add_review` view to submit a review
+@csrf_exempt
+def add_review(request):
+    if request.method != 'POST':
+        return JsonResponse({'status': 400, 'error': 'POST required'}, status=400)
+
+    try:
+        data = json.loads(request.body)
+    except Exception as e:
+        return JsonResponse({'status': 400, 'error': 'Invalid JSON body', 'details': str(e)}, status=400)
+
+    url = settings.BACKEND_URL + '/insert_review'
+    try:
+        response = requests.post(url, json=data)
+        response.raise_for_status()
+        review_response = response.json()
+        return JsonResponse({'status': 200, 'result': review_response})
+    except requests.RequestException as e:
+        return JsonResponse({'status': 500, 'error': 'Failed to insert review', 'details': str(e)}, status=500)

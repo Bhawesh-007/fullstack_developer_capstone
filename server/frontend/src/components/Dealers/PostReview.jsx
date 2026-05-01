@@ -32,9 +32,9 @@ const PostReview = () => {
       return;
     }
 
-    let model_split = model.split(" ");
-    let make_chosen = model_split[0];
-    let model_chosen = model_split[1];
+    let parts = model.split(" ");
+    let make_chosen = parts[0] || "";
+    let model_chosen = parts.slice(1).join(" ") || "";
 
     let jsoninput = JSON.stringify({
       "name": name,
@@ -66,12 +66,9 @@ const PostReview = () => {
     const res = await fetch(dealer_url, {
       method: "GET"
     });
-    const retobj = await res.json();
-    
-    if(retobj.status === 200) {
-      let dealerobjs = Array.from(retobj.dealer)
-      if(dealerobjs.length > 0)
-        setDealer(dealerobjs[0])
+    const dealerData = await res.json();
+    if (dealerData && typeof dealerData === 'object') {
+      setDealer(dealerData);
     }
   }
 
@@ -80,9 +77,8 @@ const PostReview = () => {
       method: "GET"
     });
     const retobj = await res.json();
-    
-    let carmodelsarr = Array.from(retobj.CarModels)
-    setCarmodels(carmodelsarr)
+    const carmodelsarr = Array.isArray(retobj.CarModels) ? retobj.CarModels : [];
+    setCarmodels(carmodelsarr);
   }
   useEffect(() => {
     get_dealer();

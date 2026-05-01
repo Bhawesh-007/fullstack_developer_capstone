@@ -39,6 +39,9 @@ urlpatterns = [
     path('logo512.png', serve, {'document_root': BUILD_DIR, 'path': 'logo512.png'}),
     path('asset-manifest.json', serve, {'document_root': BUILD_DIR, 'path': 'asset-manifest.json'}),
     path('robots.txt', serve, {'document_root': BUILD_DIR, 'path': 'robots.txt'}),
+    path('dealer/<int:dealer_id>', TemplateView.as_view(template_name="index.html")),
+    path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
+
 
 
 
