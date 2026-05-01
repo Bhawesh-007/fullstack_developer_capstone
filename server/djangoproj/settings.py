@@ -147,5 +147,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'frontend/build'),
     os.path.join(BASE_DIR, 'frontend/build/static'),
 ]
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "fullstack-developer-capstone-26l1.onrender.com",
+    "localhost",
+    "127.0.0.1"]
 
