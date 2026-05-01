@@ -19,10 +19,13 @@ from django.views.generic import TemplateView
 from django.views.static import serve
 from django.conf.urls.static import static
 from django.conf import settings
-from djangoapp import views as djangoapp_views
 import os
 
-BUILD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'frontend', 'build')
+BUILD_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)),
+    'frontend',
+    'build',
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,8 +42,14 @@ urlpatterns = [
     path('logo512.png', serve, {'document_root': BUILD_DIR, 'path': 'logo512.png'}),
     path('asset-manifest.json', serve, {'document_root': BUILD_DIR, 'path': 'asset-manifest.json'}),
     path('robots.txt', serve, {'document_root': BUILD_DIR, 'path': 'robots.txt'}),
-    path('dealer/<int:dealer_id>', TemplateView.as_view(template_name="index.html")),
-    path('postreview/<int:dealer_id>',TemplateView.as_view(template_name="index.html")),
+    path(
+        'dealer/<int:dealer_id>',
+        TemplateView.as_view(template_name="index.html"),
+    ),
+    path(
+        'postreview/<int:dealer_id>',
+        TemplateView.as_view(template_name="index.html"),
+    ),
 
 
 

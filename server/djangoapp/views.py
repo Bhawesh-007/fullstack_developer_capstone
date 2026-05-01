@@ -1,22 +1,15 @@
 # Uncomment the required imports before adding the code
 
-from django import http
-from django.shortcuts import render
-from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import logout
-from django.contrib import messages
-from datetime import datetime
+import json
+import logging
 import os
+
 import requests
 from django.conf import settings
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.http import JsonResponse
-from django.contrib.auth import login, authenticate
-import logging
-import json
 from django.views.decorators.csrf import csrf_exempt
-# from .populate import initiate
 
 
 # Get an instance of a logger
@@ -41,13 +34,15 @@ def login_user(request):
         data = {"userName": username, "status": "Authenticated"}
     return JsonResponse(data)
 
+
 # Create a `logout_request` view to handle sign out request
 @csrf_exempt
 def logout_request(request):
     # Terminate user session
     logout(request)
-    data = {"userName":""}
+    data = {"userName": ""}
     return JsonResponse(data)
+
 
 # Create a `registration` view to handle sign up request
 @csrf_exempt
@@ -62,32 +57,37 @@ def registration(request):
             last_name = data['lastName']
             email = data['email']
             username_exist = False
-            email_exist = False
+
             try:
                 # Check if user already exists
                 User.objects.get(username=username)
                 username_exist = True
-            except:
-                # If not, simply log this is a new user
-                logger.debug("{} is new user".format(username))
+            except User.DoesNotExist:
+                logger.debug("%s is new user", username)
 
-            # If it is a new user
             if not username_exist:
-                # Create user in auth_user table
-                user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, password=password, email=email)
-                # Login the user and redirect to list page
+                user = User.objects.create_user(
+                    username=username,
+                    first_name=first_name,
+                    last_name=last_name,
+                    password=password,
+                    email=email,
+                )
                 login(request, user)
                 data = {"userName": username, "status": "Authenticated"}
                 return JsonResponse(data)
-            else:
-                data = {"userName": username, "error": "Already Registered"}
-                return JsonResponse(data)
-        except Exception as e:
-            return JsonResponse({"status": "Failed", "message": str(e)})
-    else:
-        return JsonResponse({"status": "Failed", "message": "Only POST method allowed"})
 
-        
+            return JsonResponse(
+                {"userName": username, "error": "Already Registered"}
+            )
+        except Exception as e:
+            return JsonResponse(
+                {"status": "Failed", "message": str(e)}
+            )
+
+    return JsonResponse(
+        {"status": "Failed", "message": "Only POST method allowed"}
+    )
 
 
 # # Update the `get_dealerships` view to render the index page with
@@ -98,7 +98,7 @@ def get_dealerships(request):
     try:
         response = requests.get(url)
         dealers = response.json()
-    except:
+    except requests.RequestException:
         dealers = []
 
     return JsonResponse(dealers, safe=False)
@@ -106,28 +106,36 @@ def get_dealerships(request):
 
 def get_dealer_reviews(request, dealer_id):
     url = f"http://localhost:3030/fetchReviews/dealer/{dealer_id}"
+
     try:
         response = requests.get(url)
         reviews = response.json()
-    except:
+    except requests.RequestException:
         reviews = []
 
     return JsonResponse(reviews, safe=False)
 
+
 # Create a `get_dealer_details` view to render the dealer details
 def get_dealer_details(request, dealer_id):
     url = settings.BACKEND_URL + f"/fetchDealer/{dealer_id}"
+
     try:
         response = requests.get(url)
         dealer = response.json()
-    except:
+    except requests.RequestException:
         dealer = {}
 
     return JsonResponse(dealer, safe=False)
 
 # Create a `get_cars` view to return available car make/model pairs
 def get_cars(request):
-    car_records_path = os.path.join(settings.BASE_DIR, 'database', 'data', 'car_records.json')
+    car_records_path = os.path.join(
+        settings.BASE_DIR,
+        'database',
+        'data',
+        'car_records.json',
+    )
     try:
         with open(car_records_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
@@ -141,7 +149,10 @@ def get_cars(request):
                 key = (make, model)
                 if key not in seen:
                     seen.add(key)
-                    car_models.append({'CarMake': make, 'CarModel': model})
+                    car_models.append({
+                        'CarMake': make,
+                        'CarModel': model,
+                    })
     except Exception:
         car_models = []
 
